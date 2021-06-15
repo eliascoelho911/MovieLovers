@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.movies
+package com.github.eliascoelho911.movielovers.main
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -23,8 +23,8 @@ private val PADDING_SCREEN = 16.dp
 
 @ExperimentalAnimationApi
 @Composable
-fun MoviesScreen(moviesViewModel: MoviesViewModel) {
-    val popularMovies: List<Movie>? by moviesViewModel.popularMovies.observeAsState()
+fun MoviesScreen(mainViewModel: MainViewModel) {
+    val popularMovies: List<Movie>? by mainViewModel.popularMovies.observeAsState()
 
     Scaffold(topBar = { MoviesScreenTopBar() }) {
         MovieScreenContent(popularMovies)

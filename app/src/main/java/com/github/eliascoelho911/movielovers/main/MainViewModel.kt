@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.movies
+package com.github.eliascoelho911.movielovers.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(private val TMDBRepository: TMDBRepository) :
+class MainViewModel @Inject constructor(private val TMDBRepository: TMDBRepository) :
     ViewModel() {
     private val _popularMovies = MutableLiveData<List<Movie>>()
     val popularMovies: LiveData<List<Movie>> = _popularMovies
