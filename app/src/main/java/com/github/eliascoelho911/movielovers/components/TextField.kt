@@ -39,7 +39,6 @@ fun CustomTextField(
         MaterialTheme.shapes.small.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize),
     colors: TextFieldColors = textFieldColors(
         backgroundColor = Color.Transparent,
-        textColor = DarkGray,
         focusedIndicatorColor = Red,
         unfocusedIndicatorColor = Red.copy(alpha = ContentAlpha.high),
         cursorColor = Red

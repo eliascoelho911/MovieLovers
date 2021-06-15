@@ -1,8 +1,6 @@
 package com.github.eliascoelho911.movielovers.components
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -28,7 +26,8 @@ fun MovieHorizontalList(
                 path = currentMovie.posterPath,
                 position = position,
                 listSize = movies.size,
-                paddingStart = paddingStart
+                paddingStart = paddingStart,
+                voteAverage = currentMovie.voteAverage
             )
         })
     }
@@ -41,12 +40,13 @@ fun MovieHorizontalListItem(
     path: String,
     position: Int,
     listSize: Int,
-    paddingStart: Dp
+    paddingStart: Dp,
+    voteAverage: Double
 ) {
     val paddingValues = when (position) {
         0 -> PaddingValues(start = paddingStart, end = 8.dp)
         listSize - 1 -> PaddingValues(all = 0.dp)
         else -> PaddingValues(end = 8.dp)
     }
-    MoviePoster(modifier = modifier, title = title, path = path, paddingValues = paddingValues)
+    MoviePoster(modifier = modifier, title = title, path = path, paddingValues = paddingValues, voteAverage = voteAverage)
 }

@@ -37,8 +37,7 @@ private fun MovieScreenContent(popularMovies: List<Movie>?) {
         ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
             Text(
                 modifier = Modifier.padding(top = PADDING_SCREEN, start = PADDING_SCREEN),
-                text = stringResource(id = R.string.popular_movies).uppercase(Locale.getDefault()),
-                color = DarkGray
+                text = stringResource(id = R.string.popular_movies).uppercase(Locale.getDefault())
             )
         }
         if (popularMovies != null)
