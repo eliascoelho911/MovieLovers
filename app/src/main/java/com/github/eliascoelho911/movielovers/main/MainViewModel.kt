@@ -18,7 +18,7 @@ class MainViewModel @Inject constructor(private val TMDBRepository: TMDBReposito
 
     init {
         viewModelScope.launch {
-            _popularMovies.value = TMDBRepository.getPopularMovies()
+            _popularMovies.value = TMDBRepository.getPopularMovies().sortedByDescending { it.voteAverage }
         }
     }
 }
