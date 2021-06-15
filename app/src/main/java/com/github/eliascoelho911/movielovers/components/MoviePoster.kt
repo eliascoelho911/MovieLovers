@@ -9,6 +9,7 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,10 +62,10 @@ fun MoviePoster(
                         .width(width)
                         .padding(paddingValues)
                 ) {
-                    Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Filled.Favorite,
+                            imageVector = Icons.Filled.Star,
                             contentDescription = stringResource(id = R.string.popularity),
                             tint = Yellow
                         )
