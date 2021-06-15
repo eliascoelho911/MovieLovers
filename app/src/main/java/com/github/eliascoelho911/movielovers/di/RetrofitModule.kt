@@ -1,10 +1,9 @@
 package com.github.eliascoelho911.movielovers.di
 
-import com.github.eliascoelho911.movielovers.retrofit.TheMovieDBService
+import com.github.eliascoelho911.movielovers.retrofit.TMDBService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,8 +20,8 @@ private const val API_KEY = "a8b046346f76bbf7e43363a6f0b69d2b"
 class RetrofitModule {
 
     @Provides
-    fun provideNoteService(retrofit: Retrofit): TheMovieDBService {
-        return retrofit.create(TheMovieDBService::class.java)
+    fun provideNoteService(retrofit: Retrofit): TMDBService {
+        return retrofit.create(TMDBService::class.java)
     }
 
     @Singleton

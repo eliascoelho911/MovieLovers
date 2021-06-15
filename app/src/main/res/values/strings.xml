@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MovieLovers</string>
     <string name="search">Pesquisar</string>
+    <string name="popular_movies">Filmes populares</string>
 </resources>

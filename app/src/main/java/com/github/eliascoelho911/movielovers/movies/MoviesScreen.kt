@@ -1,13 +1,8 @@
 package com.github.eliascoelho911.movielovers.movies
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -15,30 +10,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.eliascoelho911.movielovers.components.MovieLoversLogo
+import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
 import com.github.eliascoelho911.movielovers.components.CustomTextField
+import com.github.eliascoelho911.movielovers.components.MovieHorizontalList
+import com.github.eliascoelho911.movielovers.components.MovieLoversLogo
 import com.github.eliascoelho911.movielovers.retrofit.data.Movie
-import com.github.eliascoelho911.movielovers.retrofit.data.PopularMovies
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import java.util.*
 
-@ExperimentalPagerApi
+private val PADDING_SCREEN = 16.dp
+
 @ExperimentalAnimationApi
 @Composable
-fun MoviesScreen(moviesViewModel: MoviesViewModel = viewModel()) {
-    val popularMovies: State<List<Movie>?> = moviesViewModel.popularMovies.observeAsState()
+fun MoviesScreen(moviesViewModel: MoviesViewModel) {
+    val popularMovies: List<Movie>? by moviesViewModel.popularMovies.observeAsState()
+
     Scaffold(topBar = { MoviesScreenTopBar() }) {
-        val pagerState = rememberPagerState(pageCount = 5)
-        HorizontalPager(state = pagerState) { page ->
+        MovieScreenContent(popularMovies)
+    }
+}
+
+@Composable
+private fun MovieScreenContent(popularMovies: List<Movie>?) {
+    Column {
+        ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
             Text(
-                text = "Title: ${popularMovies.value?.get(page)?.title}",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.padding(top = PADDING_SCREEN, start = PADDING_SCREEN),
+                text = stringResource(id = R.string.popular_movies).uppercase(Locale.getDefault()),
+                color = DarkGray
             )
         }
+        if (popularMovies != null)
+            MovieHorizontalList(
+                modifier = Modifier.padding(top = PADDING_SCREEN),
+                movies = popularMovies,
+                paddingStart = PADDING_SCREEN
+            )
     }
 }
 
@@ -91,5 +99,6 @@ fun MoviesScreenTopBar() {
                     tint = DarkGray
                 )
             }
-        })
+        }
+    )
 }

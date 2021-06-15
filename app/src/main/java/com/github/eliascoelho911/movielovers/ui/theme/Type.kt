@@ -66,7 +66,7 @@ val Typography = Typography(
     ),
     subtitle2 = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
         letterSpacing = 0.1.sp
     ),
