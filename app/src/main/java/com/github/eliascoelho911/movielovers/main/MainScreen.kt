@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
 import com.github.eliascoelho911.movielovers.components.CustomTextField
@@ -21,8 +23,9 @@ import com.github.eliascoelho911.movielovers.components.MoviePoster
 import com.github.eliascoelho911.movielovers.retrofit.data.Genre
 import com.github.eliascoelho911.movielovers.retrofit.data.Movie
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
-import java.util.*
+import com.github.eliascoelho911.movielovers.ui.theme.Green
 
+private val PADDING_MOVIE_HORIZONTAL_LIST = 16.dp
 private val PADDING_SCREEN = 16.dp
 
 @ExperimentalAnimationApi
@@ -48,12 +51,12 @@ private fun MovieScreenContent(
             state = rememberScrollState()
         )
     ) {
-        TextSubtitle(
-            modifier = Modifier.padding(top = PADDING_SCREEN, start = PADDING_SCREEN),
-            text = stringResource(id = R.string.popular_movies).uppercase(Locale.getDefault())
+        HeaderMovieSection(
+            paddingTop = PADDING_SCREEN,
+            title = stringResource(id = R.string.popular_movies)
         )
         MovieHorizontalList(
-            modifier = Modifier.padding(top = PADDING_SCREEN),
+            modifier = Modifier.padding(top = PADDING_MOVIE_HORIZONTAL_LIST),
             movies = popularMovies,
             item = { position, currentMovie ->
                 MoviePoster(
@@ -64,12 +67,9 @@ private fun MovieScreenContent(
                 )
             }
         )
-        TextSubtitle(
-            modifier = Modifier.padding(top = 24.dp, start = PADDING_SCREEN),
-            text = stringResource(id = R.string.upcoming_movies).uppercase(Locale.getDefault())
-        )
+        HeaderMovieSection(title = stringResource(id = R.string.upcoming_movies))
         MovieHorizontalList(
-            modifier = Modifier.padding(top = PADDING_SCREEN),
+            modifier = Modifier.padding(top = PADDING_MOVIE_HORIZONTAL_LIST),
             movies = upcomingMovies,
             item = { position, currentMovie ->
                 MoviePoster(
@@ -88,6 +88,33 @@ private fun MovieScreenContent(
 }
 
 @Composable
+private fun HeaderMovieSection(paddingTop: Dp = 24.dp, title: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TitleMovieSection(
+            modifier = Modifier
+                .padding(top = paddingTop, start = PADDING_SCREEN)
+                .weight(1f),
+            text = title.uppercase()
+        )
+        ShowAllText()
+    }
+}
+
+@Composable
+private fun RowScope.ShowAllText() {
+    ProvideTextStyle(value = MaterialTheme.typography.caption) {
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = PADDING_MOVIE_HORIZONTAL_LIST, end = PADDING_MOVIE_HORIZONTAL_LIST),
+            text = stringResource(id = R.string.show_all),
+            textAlign = TextAlign.End,
+            color = Green
+        )
+    }
+}
+
+@Composable
 private fun getHorizontalListPaddingValues(
     position: Int,
     listSize: Int
@@ -98,7 +125,7 @@ private fun getHorizontalListPaddingValues(
 }
 
 @Composable
-private fun TextSubtitle(modifier: Modifier, text: String) {
+private fun TitleMovieSection(modifier: Modifier, text: String) {
     ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
         Text(
             modifier = modifier,
