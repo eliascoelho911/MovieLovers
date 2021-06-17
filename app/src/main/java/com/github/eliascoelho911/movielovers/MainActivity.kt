@@ -8,17 +8,15 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.eliascoelho911.movielovers.main.MoviesScreen
-import com.github.eliascoelho911.movielovers.main.MainViewModel
+import com.github.eliascoelho911.movielovers.ui.main.MainViewModel
+import com.github.eliascoelho911.movielovers.ui.main.MoviesScreen
 import com.github.eliascoelho911.movielovers.ui.theme.MovieLoversTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
-    @ExperimentalPagerApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

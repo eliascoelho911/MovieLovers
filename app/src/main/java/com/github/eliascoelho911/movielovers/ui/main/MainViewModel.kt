@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.main
+package com.github.eliascoelho911.movielovers.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,6 @@ import com.github.eliascoelho911.movielovers.repository.TMDBGenresRepository
 import com.github.eliascoelho911.movielovers.repository.TMDBMoviesRepository
 import com.github.eliascoelho911.movielovers.retrofit.data.Genre
 import com.github.eliascoelho911.movielovers.retrofit.data.Movie
-import com.github.eliascoelho911.movielovers.retrofit.data.TMDBGenresResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

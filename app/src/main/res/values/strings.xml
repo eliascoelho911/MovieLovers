@@ -5,4 +5,7 @@
     <string name="popularity">Popularidade</string>
     <string name="upcoming_movies">Próximos filmes</string>
     <string name="show_all">Ver todos</string>
+    <string name="back">Voltar</string>
+    <string name="menu">Menu</string>
+    <string name="enter_movie_name">Nome do filme</string>
 </resources>

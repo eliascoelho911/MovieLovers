@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.components
+package com.github.eliascoelho911.movielovers.ui.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.shape.ZeroCornerSize
@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
 import com.github.eliascoelho911.movielovers.ui.theme.Red
 
 @Composable
@@ -41,7 +40,7 @@ fun CustomTextField(
         backgroundColor = Color.Transparent,
         focusedIndicatorColor = Red,
         unfocusedIndicatorColor = Red.copy(alpha = ContentAlpha.high),
-        cursorColor = Red
+        cursorColor = Red,
     )
 ) {
     TextField(

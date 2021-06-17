@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.components
+package com.github.eliascoelho911.movielovers.ui.components
 
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
