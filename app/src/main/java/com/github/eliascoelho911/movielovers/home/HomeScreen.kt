@@ -24,23 +24,31 @@ import com.github.eliascoelho911.movielovers.model.Movie
 import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
 import com.github.eliascoelho911.movielovers.ui.theme.Green
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 
 private val MovieHorizontalListPadding = 16.dp
 private val ScreenPadding = 16.dp
 
 @ExperimentalAnimationApi
 @Composable
-fun HomeScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    tmdbViewModel: TmdbViewModel,
+    onClickShowAll: (List<Movie>) -> Unit
+) {
     val popularMovies: List<Movie> by tmdbViewModel.popularMovies.observeAsState(emptyList())
     val upcomingMovies: List<Movie> by tmdbViewModel.upcomingMovies.observeAsState(emptyList())
     var searchedText: String by remember { mutableStateOf("") }
-    Scaffold(topBar = {
-        HomeScreenTopBar(
-            searchedText = searchedText,
-            onSearchValueChanged = { searchedText = it }
-        )
-    }) {
+    Scaffold(modifier = Modifier.statusBarsPadding(),
+        topBar = {
+            HomeScreenTopBar(
+                searchedText = searchedText,
+                onSearchValueChanged = { searchedText = it }
+            )
+        }) {
         HomeScreenContent(
+            modifier = modifier,
             popularMovies = popularMovies,
             upcomingMovies = upcomingMovies,
             tmdbViewModel = tmdbViewModel,
@@ -149,12 +157,17 @@ private fun HomeScreenTopBar(searchedText: String, onSearchValueChanged: (String
 
 @Composable
 private fun HomeScreenContent(
+    modifier: Modifier,
     popularMovies: List<Movie>,
     upcomingMovies: List<Movie>,
     tmdbViewModel: TmdbViewModel,
     onClickShowAll: (List<Movie>) -> Unit
 ) {
-    Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+    Column(
+        modifier = modifier
+            .verticalScroll(state = rememberScrollState())
+            .navigationBarsPadding()
+    ) {
         MovieSection(
             title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,

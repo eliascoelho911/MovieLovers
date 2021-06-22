@@ -27,7 +27,10 @@ fun MovieLoversTheme(
     content: @Composable () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = Color.White)
+    systemUiController.setSystemBarsColor(
+        color = Color.Transparent,
+        darkIcons = true
+    )
 
     MaterialTheme(
         colors = LightColorPalette,
