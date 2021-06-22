@@ -2,9 +2,11 @@ package com.github.eliascoelho911.movielovers.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -154,8 +156,8 @@ private fun HomeScreenContent(
     tmdbViewModel: TmdbViewModel,
     onClickShowAll: (List<Movie>) -> Unit
 ) {
-    val movieSections = listOf(
-        MovieSectionData(
+    Column(modifier = Modifier.horizontalScroll(state = rememberScrollState())) {
+        MovieSection(
             title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,
             item = { _, movie ->
@@ -164,9 +166,10 @@ private fun HomeScreenContent(
                     path = movie.posterPath,
                     voteAverage = movie.voteAverage
                 )
-            }
-        ),
-        MovieSectionData(
+            },
+            onClickShowAll = onClickShowAll
+        )
+        MovieSection(
             title = stringResource(id = R.string.upcoming_movies),
             movies = upcomingMovies,
             item = { _, movie ->
@@ -181,31 +184,28 @@ private fun HomeScreenContent(
                     path = movie.posterPath,
                     genre = namesOfGenres
                 )
-            }
+            },
+            onClickShowAll = onClickShowAll
         )
-    )
-
-    LazyColumn {
-        items(items = movieSections) {
-            MovieSection(onClickShowAll = onClickShowAll, movieSectionData = it)
-        }
     }
 }
 
 @Composable
 private fun MovieSection(
     onClickShowAll: (List<Movie>) -> Unit,
-    movieSectionData: MovieSectionData
+    title: String,
+    movies: List<Movie>,
+    item: @Composable (position: Int, movie: Movie) -> Unit
 ) {
     HeaderMovieSection(
-        title = movieSectionData.title,
-        onClickShowAll = { onClickShowAll(movieSectionData.movies) }
+        title = title,
+        onClickShowAll = { onClickShowAll(movies) }
     )
     MovieHorizontalList(
         modifier = Modifier.padding(top = MovieHorizontalListPadding),
-        movies = movieSectionData.movies,
+        movies = movies,
         item = { position, currentMovie ->
-            movieSectionData.item(position = position, movie = currentMovie)
+            item(position = position, movie = currentMovie)
         },
         horizontalPadding = ScreenPadding
     )
@@ -235,9 +235,3 @@ private fun HeaderMovieSection(title: String, onClickShowAll: () -> Unit) {
         }
     }
 }
-
-data class MovieSectionData(
-    val title: String,
-    val movies: List<Movie>,
-    val item: @Composable (position: Int, movie: Movie) -> Unit
-)
