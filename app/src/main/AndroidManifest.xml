@@ -12,7 +12,7 @@
             android:theme="@style/Theme.MovieLovers"
             android:name=".App">
         <activity
-                android:name=".MainActivity"
+                android:name=".home.MainActivity"
                 android:exported="true"
                 android:label="@string/app_name"
                 android:theme="@style/Theme.MovieLovers.NoActionBar">

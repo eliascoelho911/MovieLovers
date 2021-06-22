@@ -1,6 +1,6 @@
 package com.github.eliascoelho911.movielovers.di
 
-import com.github.eliascoelho911.movielovers.repository.cache.MovieCache
+import com.github.eliascoelho911.movielovers.tmdb.cache.MovieCache
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

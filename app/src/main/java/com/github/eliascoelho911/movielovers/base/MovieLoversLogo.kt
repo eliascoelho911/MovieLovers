@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.ui.components
+package com.github.eliascoelho911.movielovers.base
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.ui.components
+package com.github.eliascoelho911.movielovers.base
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.shape.ZeroCornerSize

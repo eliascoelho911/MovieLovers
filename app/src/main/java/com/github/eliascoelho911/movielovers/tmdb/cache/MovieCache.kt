@@ -1,6 +1,6 @@
-package com.github.eliascoelho911.movielovers.repository.cache
+package com.github.eliascoelho911.movielovers.tmdb.cache
 
-import com.github.eliascoelho911.movielovers.retrofit.data.Movie
+import com.github.eliascoelho911.movielovers.model.Movie
 
 
 class MovieCache {

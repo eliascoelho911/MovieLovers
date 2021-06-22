@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.ui.components
+package com.github.eliascoelho911.movielovers.base
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,12 +32,10 @@ fun MoviePoster(
     title: String,
     path: String,
     voteAverage: Double,
-    paddingValues: PaddingValues
 ) {
     MoviePosterImpl(
         title = title,
         path = path,
-        paddingValues = paddingValues,
         modifier = modifier,
         subtitle = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -64,12 +62,10 @@ fun MoviePoster(
     title: String,
     path: String,
     genre: String,
-    paddingValues: PaddingValues
 ) {
     MoviePosterImpl(
         title = title,
         path = path,
-        paddingValues = paddingValues,
         modifier = modifier,
         subtitle = {
             ProvideTextStyle(value = MaterialTheme.typography.body2) {
@@ -84,7 +80,6 @@ private fun MoviePosterImpl(
     title: String,
     path: String,
     subtitle: @Composable () -> Unit,
-    paddingValues: PaddingValues
 ) {
     val painter = rememberCoilPainter(
         request = TMDBImage.getAbsoluteUrl(
@@ -95,7 +90,6 @@ private fun MoviePosterImpl(
     )
     val width = 160.dp
     val imageModifier = modifier
-        .padding(paddingValues)
         .width(width)
         .height(230.dp)
         .clip(MaterialTheme.shapes.medium)
@@ -113,7 +107,6 @@ private fun MoviePosterImpl(
                 Column(
                     modifier = Modifier
                         .width(width)
-                        .padding(paddingValues)
                 ) {
                     Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     subtitle()

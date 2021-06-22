@@ -1,13 +1,13 @@
-package com.github.eliascoelho911.movielovers.repository
+package com.github.eliascoelho911.movielovers.tmdb
 
 import com.github.eliascoelho911.movielovers.retrofit.TMDBService
-import com.github.eliascoelho911.movielovers.repository.cache.MovieCache
-import com.github.eliascoelho911.movielovers.repository.cache.CacheType.POPULAR_MOVIES
-import com.github.eliascoelho911.movielovers.repository.cache.CacheType.UPCOMING_MOVIES
-import com.github.eliascoelho911.movielovers.retrofit.data.Movie
+import com.github.eliascoelho911.movielovers.tmdb.cache.MovieCache
+import com.github.eliascoelho911.movielovers.tmdb.cache.CacheType.POPULAR_MOVIES
+import com.github.eliascoelho911.movielovers.tmdb.cache.CacheType.UPCOMING_MOVIES
+import com.github.eliascoelho911.movielovers.model.Movie
 import javax.inject.Inject
 
-class TMDBMoviesRepository @Inject constructor(
+class TmdbMoviesRepository @Inject constructor(
     private val tmdbService: TMDBService,
     private val movieCache: MovieCache
 ) {

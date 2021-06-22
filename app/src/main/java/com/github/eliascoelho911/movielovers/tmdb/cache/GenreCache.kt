@@ -1,6 +1,6 @@
-package com.github.eliascoelho911.movielovers.repository.cache
+package com.github.eliascoelho911.movielovers.tmdb.cache
 
-import com.github.eliascoelho911.movielovers.retrofit.data.Genre
+import com.github.eliascoelho911.movielovers.model.Genre
 
 class GenreCache {
     private val cached: MutableSet<Genre> = mutableSetOf()

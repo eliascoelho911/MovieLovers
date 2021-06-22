@@ -1,7 +1,7 @@
 package com.github.eliascoelho911.movielovers.retrofit
 
-import com.github.eliascoelho911.movielovers.retrofit.data.TMDBGenresResponse
-import com.github.eliascoelho911.movielovers.retrofit.data.TMDBResponse
+import com.github.eliascoelho911.movielovers.retrofit.response.TMDBGenresResponse
+import com.github.eliascoelho911.movielovers.retrofit.response.TMDBResponse
 import retrofit2.http.GET
 
 interface TMDBService {

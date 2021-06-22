@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.retrofit.data
+package com.github.eliascoelho911.movielovers.model
 
 import com.google.gson.annotations.SerializedName
 

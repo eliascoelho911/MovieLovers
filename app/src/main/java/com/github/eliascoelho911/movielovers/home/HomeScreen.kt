@@ -1,12 +1,11 @@
-package com.github.eliascoelho911.movielovers.ui.main
+package com.github.eliascoelho911.movielovers.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -14,43 +13,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
-import com.github.eliascoelho911.movielovers.retrofit.data.Genre
-import com.github.eliascoelho911.movielovers.retrofit.data.Movie
-import com.github.eliascoelho911.movielovers.ui.components.*
+import com.github.eliascoelho911.movielovers.base.CustomTextField
+import com.github.eliascoelho911.movielovers.base.MovieHorizontalList
+import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
+import com.github.eliascoelho911.movielovers.base.MoviePoster
+import com.github.eliascoelho911.movielovers.model.Movie
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
 import com.github.eliascoelho911.movielovers.ui.theme.Green
+import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 
-private val PADDING_MOVIE_HORIZONTAL_LIST = 16.dp
-private val PADDING_SCREEN = 16.dp
+private val MovieHorizontalListPadding = 16.dp
+private val ScreenPadding = 16.dp
 
 @ExperimentalAnimationApi
 @Composable
-fun MoviesScreen(mainViewModel: MainViewModel) {
-    val popularMovies: List<Movie> by mainViewModel.popularMovies.observeAsState(emptyList())
-    val upcomingMovies: List<Movie> by mainViewModel.upcomingMovies.observeAsState(emptyList())
-    val allGenres: Set<Genre> by mainViewModel.allGenres.observeAsState(emptySet())
+fun HomeScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Unit) {
+    val popularMovies: List<Movie> by tmdbViewModel.popularMovies.observeAsState(emptyList())
+    val upcomingMovies: List<Movie> by tmdbViewModel.upcomingMovies.observeAsState(emptyList())
     var searchedText: String by remember { mutableStateOf("") }
-
     Scaffold(topBar = {
-        MainScreenTopBar(
+        HomeScreenTopBar(
             searchedText = searchedText,
             onSearchValueChanged = { searchedText = it }
         )
     }) {
-        MovieScreenContent(popularMovies, upcomingMovies, allGenres)
+        HomeScreenContent(
+            popularMovies = popularMovies,
+            upcomingMovies = upcomingMovies,
+            tmdbViewModel = tmdbViewModel,
+            onClickShowAll = onClickShowAll
+        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-private fun MainScreenTopBar(searchedText: String, onSearchValueChanged: (String) -> Unit) {
+private fun HomeScreenTopBar(searchedText: String, onSearchValueChanged: (String) -> Unit) {
     var logoIsVisible by remember { mutableStateOf(true) }
-    MovieLoversTopBar(title = {
+    TopAppBar(title = {
         Row(
             modifier = Modifier
                 .fillMaxSize(),
@@ -145,95 +148,96 @@ private fun MainScreenTopBar(searchedText: String, onSearchValueChanged: (String
 }
 
 @Composable
-private fun MovieScreenContent(
+private fun HomeScreenContent(
     popularMovies: List<Movie>,
     upcomingMovies: List<Movie>,
-    allGenres: Set<Genre>
+    tmdbViewModel: TmdbViewModel,
+    onClickShowAll: (List<Movie>) -> Unit
 ) {
-    Column(
-        modifier = Modifier.verticalScroll(
-            state = rememberScrollState()
-        )
-    ) {
-        HeaderMovieSection(
-            paddingTop = PADDING_SCREEN,
-            title = stringResource(id = R.string.popular_movies)
-        )
-        MovieHorizontalList(
-            modifier = Modifier.padding(top = PADDING_MOVIE_HORIZONTAL_LIST),
+    val movieSections = listOf(
+        MovieSectionData(
+            title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,
-            item = { position, currentMovie ->
+            item = { _, movie ->
                 MoviePoster(
-                    title = currentMovie.title,
-                    path = currentMovie.posterPath,
-                    voteAverage = currentMovie.voteAverage,
-                    paddingValues = getHorizontalListPaddingValues(position, popularMovies.size)
+                    title = movie.title,
+                    path = movie.posterPath,
+                    voteAverage = movie.voteAverage
                 )
             }
-        )
-        HeaderMovieSection(title = stringResource(id = R.string.upcoming_movies))
-        MovieHorizontalList(
-            modifier = Modifier.padding(top = PADDING_MOVIE_HORIZONTAL_LIST),
+        ),
+        MovieSectionData(
+            title = stringResource(id = R.string.upcoming_movies),
             movies = upcomingMovies,
-            item = { position, currentMovie ->
+            item = { _, movie ->
+                var namesOfGenres: String by remember { mutableStateOf("") }
+                tmdbViewModel.findGenres(genreIds = movie.genreIds, onFinish = { result ->
+                    result.onSuccess { genres ->
+                        namesOfGenres = genres.joinToString { it.name }
+                    }
+                })
                 MoviePoster(
-                    title = currentMovie.title,
-                    path = currentMovie.posterPath,
-                    genre = allGenres.filter { genre -> currentMovie.genre_ids.any { it == genre.id } }
-                        .joinToString { it.name },
-                    paddingValues = getHorizontalListPaddingValues(
-                        position,
-                        upcomingMovies.size
-                    )
+                    title = movie.title,
+                    path = movie.posterPath,
+                    genre = namesOfGenres
                 )
             }
         )
+    )
+
+    LazyColumn {
+        items(items = movieSections) {
+            MovieSection(onClickShowAll = onClickShowAll, movieSectionData = it)
+        }
     }
 }
 
 @Composable
-private fun HeaderMovieSection(paddingTop: Dp = 24.dp, title: String) {
+private fun MovieSection(
+    onClickShowAll: (List<Movie>) -> Unit,
+    movieSectionData: MovieSectionData
+) {
+    HeaderMovieSection(
+        title = movieSectionData.title,
+        onClickShowAll = { onClickShowAll(movieSectionData.movies) }
+    )
+    MovieHorizontalList(
+        modifier = Modifier.padding(top = MovieHorizontalListPadding),
+        movies = movieSectionData.movies,
+        item = { position, currentMovie ->
+            movieSectionData.item(position = position, movie = currentMovie)
+        },
+        horizontalPadding = ScreenPadding
+    )
+}
+
+@Composable
+private fun HeaderMovieSection(title: String, onClickShowAll: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        TitleMovieSection(
-            modifier = Modifier
-                .padding(top = paddingTop, start = PADDING_SCREEN)
-                .weight(1f),
-            text = title.uppercase()
-        )
-        ShowAllText()
+        ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
+            Text(
+                modifier = Modifier
+                    .padding(top = ScreenPadding, start = ScreenPadding)
+                    .weight(1f),
+                text = title.uppercase()
+            )
+        }
+        ProvideTextStyle(value = MaterialTheme.typography.caption) {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = MovieHorizontalListPadding, end = MovieHorizontalListPadding)
+                    .clickable(onClick = onClickShowAll),
+                text = stringResource(id = R.string.show_all),
+                textAlign = TextAlign.End,
+                color = Green
+            )
+        }
     }
 }
 
-@Composable
-private fun RowScope.ShowAllText() {
-    ProvideTextStyle(value = MaterialTheme.typography.caption) {
-        Text(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = PADDING_MOVIE_HORIZONTAL_LIST, end = PADDING_MOVIE_HORIZONTAL_LIST),
-            text = stringResource(id = R.string.show_all),
-            textAlign = TextAlign.End,
-            color = Green
-        )
-    }
-}
-
-@Composable
-private fun getHorizontalListPaddingValues(
-    position: Int,
-    listSize: Int
-) = when (position) {
-    0 -> PaddingValues(start = PADDING_SCREEN, end = 8.dp)
-    listSize - 1 -> PaddingValues(end = PADDING_SCREEN)
-    else -> PaddingValues(end = 8.dp)
-}
-
-@Composable
-private fun TitleMovieSection(modifier: Modifier, text: String) {
-    ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
-        Text(
-            modifier = modifier,
-            text = text
-        )
-    }
-}
+data class MovieSectionData(
+    val title: String,
+    val movies: List<Movie>,
+    val item: @Composable (position: Int, movie: Movie) -> Unit
+)

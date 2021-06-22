@@ -1,4 +1,4 @@
-package com.github.eliascoelho911.movielovers.util
+package com.github.eliascoelho911.movielovers.tmdb
 
 private const val BASE_URL = "https://image.tmdb.org/t/p/"
 
