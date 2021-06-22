@@ -1,11 +1,13 @@
 package com.github.eliascoelho911.movielovers.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
     primary = Color.White,
     primaryVariant = Color.LightGray,

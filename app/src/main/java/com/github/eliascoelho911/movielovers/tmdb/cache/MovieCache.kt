@@ -15,15 +15,15 @@ class MovieCache {
         return cached.filter { ids.contains(it.id) }
     }
 
-    fun put(type: CacheType, movies: Collection<Movie>) {
+    fun put(type: CacheType? = null, movies: List<Movie>) {
         cached.addAll(movies)
-        cachedByType.removeAll { it.type == type }
-        cachedByType.addAll(movies.map { CachedByTypeItem(id = it.id, type = type) })
+        if (type != null)
+            cachedByType.addAll(movies.map { CachedByTypeItem(id = it.id, type = type) })
     }
 }
 
 data class CachedByTypeItem(val id: Long, val type: CacheType)
 
 enum class CacheType {
-    POPULAR_MOVIES, UPCOMING_MOVIES, NONE
+    POPULAR_MOVIES, UPCOMING_MOVIES
 }

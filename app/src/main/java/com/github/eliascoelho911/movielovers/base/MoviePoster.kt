@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
+import com.github.eliascoelho911.movielovers.tmdb.TMDBImage
+import com.github.eliascoelho911.movielovers.tmdb.w780
 import com.github.eliascoelho911.movielovers.ui.theme.Yellow
-import com.github.eliascoelho911.movielovers.util.TMDBImage
-import com.github.eliascoelho911.movielovers.util.w780
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import java.math.RoundingMode.UP

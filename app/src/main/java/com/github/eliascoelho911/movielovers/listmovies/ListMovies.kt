@@ -9,7 +9,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
-import com.github.eliascoelho911.movielovers.model.Movie
 
 @ExperimentalAnimationApi
 @Composable
