@@ -8,13 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import com.github.eliascoelho911.movielovers.model.Movie
+import com.github.eliascoelho911.movielovers.ui.theme.MovieLoversTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 internal const val KEY_ARG_MOVIES = "KEY_ARG_MOVIES"
 
 fun launchListMoviesActivity(context: Context, movies: List<Movie>) {
     context.startActivity(Intent(context, ListMoviesActivity::class.java).apply {
-        putExtra(KEY_ARG_MOVIES, movies.toTypedArray())
+        putParcelableArrayListExtra(KEY_ARG_MOVIES, ArrayList(movies))
     })
 }
 
@@ -27,7 +28,9 @@ class ListMoviesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ListMoviesScreen(listMoviesViewModel)
+            MovieLoversTheme {
+                ListMoviesScreen(listMoviesViewModel)
+            }
         }
     }
 }

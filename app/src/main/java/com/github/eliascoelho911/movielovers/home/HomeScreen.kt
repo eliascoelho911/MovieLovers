@@ -2,11 +2,9 @@ package com.github.eliascoelho911.movielovers.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -23,9 +21,9 @@ import com.github.eliascoelho911.movielovers.base.MovieHorizontalList
 import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
 import com.github.eliascoelho911.movielovers.base.MoviePoster
 import com.github.eliascoelho911.movielovers.model.Movie
+import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
 import com.github.eliascoelho911.movielovers.ui.theme.Green
-import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 
 private val MovieHorizontalListPadding = 16.dp
 private val ScreenPadding = 16.dp
@@ -156,14 +154,14 @@ private fun HomeScreenContent(
     tmdbViewModel: TmdbViewModel,
     onClickShowAll: (List<Movie>) -> Unit
 ) {
-    Column(modifier = Modifier.horizontalScroll(state = rememberScrollState())) {
+    Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
         MovieSection(
             title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,
             item = { _, movie ->
                 MoviePoster(
                     title = movie.title,
-                    path = movie.posterPath,
+                    path = movie.posterPath ?: "",
                     voteAverage = movie.voteAverage
                 )
             },
@@ -174,14 +172,15 @@ private fun HomeScreenContent(
             movies = upcomingMovies,
             item = { _, movie ->
                 var namesOfGenres: String by remember { mutableStateOf("") }
-                tmdbViewModel.findGenres(genreIds = movie.genreIds, onFinish = { result ->
-                    result.onSuccess { genres ->
-                        namesOfGenres = genres.joinToString { it.name }
-                    }
-                })
+                if (movie.genreIds != null)
+                    tmdbViewModel.findGenres(genreIds = movie.genreIds, onFinish = { result ->
+                        result.onSuccess { genres ->
+                            namesOfGenres = genres.joinToString { it.name }
+                        }
+                    })
                 MoviePoster(
                     title = movie.title,
-                    path = movie.posterPath,
+                    path = movie.posterPath ?: "",
                     genre = namesOfGenres
                 )
             },

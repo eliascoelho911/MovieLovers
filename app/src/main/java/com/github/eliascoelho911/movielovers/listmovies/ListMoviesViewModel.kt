@@ -10,5 +10,5 @@ import javax.inject.Inject
 class ListMoviesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val movies: List<Movie> = savedStateHandle.get<List<Movie>>(KEY_ARG_MOVIES)!!
+    val movies: List<Movie> = savedStateHandle.get<ArrayList<Movie>>(KEY_ARG_MOVIES)!!.toList()
 }

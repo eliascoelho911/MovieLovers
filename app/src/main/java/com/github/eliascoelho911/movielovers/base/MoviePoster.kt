@@ -69,7 +69,12 @@ fun MoviePoster(
         modifier = modifier,
         subtitle = {
             ProvideTextStyle(value = MaterialTheme.typography.body2) {
-                Text(text = genre, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = genre,
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         })
 }
@@ -113,7 +118,7 @@ private fun MoviePosterImpl(
                 }
             }
         }
-        if (painter.loadState is ImageLoadState.Loading) {
+        if (painter.loadState is ImageLoadState.Loading || painter.loadState is ImageLoadState.Error) {
             Box(
                 modifier = imageModifier
                     .width(width)
