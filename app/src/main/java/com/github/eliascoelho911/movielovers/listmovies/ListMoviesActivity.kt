@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import com.github.eliascoelho911.movielovers.model.Movie
 import com.github.eliascoelho911.movielovers.ui.theme.MovieLoversTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,7 @@ class ListMoviesActivity : ComponentActivity() {
 
     private val listMoviesViewModel: ListMoviesViewModel by viewModels()
 
+    @ExperimentalFoundationApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

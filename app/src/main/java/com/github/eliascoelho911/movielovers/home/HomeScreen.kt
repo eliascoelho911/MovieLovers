@@ -19,7 +19,7 @@ import com.github.eliascoelho911.movielovers.R
 import com.github.eliascoelho911.movielovers.base.CustomTextField
 import com.github.eliascoelho911.movielovers.base.MovieHorizontalList
 import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
-import com.github.eliascoelho911.movielovers.base.MoviePoster
+import com.github.eliascoelho911.movielovers.base.MovieHorizontalListItem
 import com.github.eliascoelho911.movielovers.model.Movie
 import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
@@ -172,7 +172,7 @@ private fun HomeScreenContent(
             title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,
             item = { _, movie ->
-                MoviePoster(
+                MovieHorizontalListItem(
                     title = movie.title,
                     path = movie.posterPath ?: "",
                     voteAverage = movie.voteAverage
@@ -191,7 +191,7 @@ private fun HomeScreenContent(
                             namesOfGenres = genres.joinToString { it.name }
                         }
                     })
-                MoviePoster(
+                MovieHorizontalListItem(
                     title = movie.title,
                     path = movie.posterPath ?: "",
                     genre = namesOfGenres
