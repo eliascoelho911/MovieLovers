@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import com.github.eliascoelho911.movielovers.base.movielist.TitleText
 import com.github.eliascoelho911.movielovers.tmdb.TMDBImage
 import com.github.eliascoelho911.movielovers.tmdb.w780
 import com.google.accompanist.coil.rememberCoilPainter

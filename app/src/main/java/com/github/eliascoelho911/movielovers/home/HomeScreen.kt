@@ -16,10 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
-import com.github.eliascoelho911.movielovers.base.CustomTextField
-import com.github.eliascoelho911.movielovers.base.MovieHorizontalList
+import com.github.eliascoelho911.movielovers.base.MovieLoversTextField
+import com.github.eliascoelho911.movielovers.base.movielist.MovieHorizontalList
 import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
-import com.github.eliascoelho911.movielovers.base.MovieHorizontalListItem
+import com.github.eliascoelho911.movielovers.base.MovieLoversTopAppBar
+import com.github.eliascoelho911.movielovers.base.movielist.MovieHorizontalListItem
 import com.github.eliascoelho911.movielovers.model.Movie
 import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
@@ -61,45 +62,39 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenTopBar(searchedText: String, onSearchValueChanged: (String) -> Unit) {
     var logoIsVisible by remember { mutableStateOf(true) }
-    TopAppBar(title = {
-        Row(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+    MovieLoversTopAppBar(title = {
+        AnimatedVisibility(
+            visible = !logoIsVisible,
+            enter = expandHorizontally(
+                expandFrom = Alignment.Start,
+                initialWidth = { 0 }
+            ) + fadeIn(initialAlpha = 0.3f),
+            exit = shrinkHorizontally(
+                shrinkTowards = Alignment.End
+            ) + fadeOut()
         ) {
-            AnimatedVisibility(
-                visible = !logoIsVisible,
-                enter = expandHorizontally(
-                    expandFrom = Alignment.Start,
-                    initialWidth = { 0 }
-                ) + fadeIn(initialAlpha = 0.3f),
-                exit = shrinkHorizontally(
-                    shrinkTowards = Alignment.End
-                ) + fadeOut()
-            ) {
-                ProvideTextStyle(value = MaterialTheme.typography.body1) {
-                    CustomTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = searchedText,
-                        onValueChanged = onSearchValueChanged,
-                        placeholder = {
-                            ProvideTextStyle(value = MaterialTheme.typography.body1) {
-                                Text(
-                                    text = stringResource(id = R.string.enter_movie_name),
-                                    color = Color.LightGray
-                                )
-                            }
+            ProvideTextStyle(value = MaterialTheme.typography.body1) {
+                MovieLoversTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = searchedText,
+                    onValueChanged = onSearchValueChanged,
+                    placeholder = {
+                        ProvideTextStyle(value = MaterialTheme.typography.body1) {
+                            Text(
+                                text = stringResource(id = R.string.enter_movie_name),
+                                color = Color.LightGray
+                            )
                         }
-                    )
-                }
+                    }
+                )
             }
-            AnimatedVisibility(
-                visible = logoIsVisible,
-                enter = fadeIn(initialAlpha = 0.3f),
-                exit = fadeOut()
-            ) {
-                MovieLoversLogo()
-            }
+        }
+        AnimatedVisibility(
+            visible = logoIsVisible,
+            enter = fadeIn(initialAlpha = 0.3f),
+            exit = fadeOut()
+        ) {
+            MovieLoversLogo()
         }
     }, actions = {
         IconButton(onClick = { logoIsVisible = false }) {
@@ -174,7 +169,7 @@ private fun HomeScreenContent(
             item = { _, movie ->
                 MovieHorizontalListItem(
                     title = movie.title,
-                    path = movie.posterPath ?: "",
+                    pathImage = movie.posterPath ?: "",
                     voteAverage = movie.voteAverage
                 )
             },
@@ -193,7 +188,7 @@ private fun HomeScreenContent(
                     })
                 MovieHorizontalListItem(
                     title = movie.title,
-                    path = movie.posterPath ?: "",
+                    pathImage = movie.posterPath ?: "",
                     genre = namesOfGenres
                 )
             },
@@ -217,9 +212,15 @@ private fun MovieSection(
         modifier = Modifier.padding(top = MovieHorizontalListPadding),
         movies = movies,
         item = { position, currentMovie ->
-            item(position = position, movie = currentMovie)
-        },
-        horizontalPadding = ScreenPadding
+            val paddingValues = when (position) {
+                0 -> PaddingValues(start = MovieHorizontalListPadding, end = 8.dp)
+                movies.size - 1 -> PaddingValues(end = MovieHorizontalListPadding)
+                else -> PaddingValues(end = 8.dp)
+            }
+            Box(modifier = Modifier.padding(paddingValues = paddingValues)) {
+                item(position = position, movie = currentMovie)
+            }
+        }
     )
 }
 

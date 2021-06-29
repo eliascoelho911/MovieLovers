@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.github.eliascoelho911.movielovers.ui.theme.Red
 
 @Composable
-fun CustomTextField(
+fun MovieLoversTextField(
     text: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,

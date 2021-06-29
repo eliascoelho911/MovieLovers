@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProvideWindowInsets {
                 MovieLoversTheme {
-                    MainScreen(
+                    MainActivityScreen(
                         tmdbViewModel = tmdbViewModel,
                         onClickShowAll = { movies ->
                             launchListMoviesActivity(
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 @ExperimentalAnimationApi
 @VisibleForTesting
 @Composable
-fun MainScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Unit) {
+fun MainActivityScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Unit) {
     Surface(color = MaterialTheme.colors.primary) {
         val transitionState = remember { MutableTransitionState(SplashState.Shown) }
         val transition = updateTransition(transitionState, label = "splashTransition")
@@ -84,7 +84,7 @@ fun MainScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Un
                 modifier = Modifier.alpha(splashAlpha),
                 onTimeout = { transitionState.targetState = SplashState.Completed }
             )
-            MainContent(
+            MainActivityContent(
                 modifier = Modifier.alpha(contentAlpha),
                 topPadding = contentTopPadding,
                 tmdbViewModel = tmdbViewModel,
@@ -96,7 +96,7 @@ fun MainScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Un
 
 @ExperimentalAnimationApi
 @Composable
-private fun MainContent(
+private fun MainActivityContent(
     modifier: Modifier = Modifier,
     topPadding: Dp = 0.dp,
     tmdbViewModel: TmdbViewModel,
