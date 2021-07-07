@@ -133,7 +133,7 @@ private fun MovieDetailsContent(
                         .height(128.dp)
                         .clip(MaterialTheme.shapes.medium)
                 )
-                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Column(modifier = Modifier.padding(horizontal = ScreenPadding)) {
                     Title(text = title)
                     VoteAverage(
                         modifier = Modifier.padding(vertical = 8.dp),
