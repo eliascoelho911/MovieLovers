@@ -8,4 +8,12 @@
     <string name="back">Voltar</string>
     <string name="menu">Menu</string>
     <string name="enter_movie_name">Nome do filme</string>
+    <string name="like">Gostei</string>
+    <string name="backdrop">Imagem do filme</string>
+    <string name="release_date">Data do lançamento</string>
+    <string name="director">Diretor</string>
+    <string name="producer">Produtores</string>
+    <string name="storyline">Enredo</string>
+    <string name="read_more">Leia mais</string>
+    <string name="cast">Elenco</string>
 </resources>

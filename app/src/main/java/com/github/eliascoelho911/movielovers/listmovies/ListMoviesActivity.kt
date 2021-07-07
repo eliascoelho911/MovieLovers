@@ -7,24 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.github.eliascoelho911.movielovers.home.SplashState
+import com.github.eliascoelho911.movielovers.details.launchMovieDetailsActivity
 import com.github.eliascoelho911.movielovers.model.Movie
-import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.MovieLoversTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +27,6 @@ fun launchListMoviesActivity(context: Context, movies: List<Movie>) {
 class ListMoviesActivity : ComponentActivity() {
 
     private val listMoviesViewModel: ListMoviesViewModel by viewModels()
-    private val tmdbViewModel: TmdbViewModel by viewModels()
 
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi
@@ -55,8 +40,13 @@ class ListMoviesActivity : ComponentActivity() {
                 MovieLoversTheme {
                     ListMoviesScreen(
                         listMoviesViewModel = listMoviesViewModel,
-                        tmdbViewModel = tmdbViewModel,
-                        onBackPressed = { finish() }
+                        onBackPressed = { finish() },
+                        onClickMovieItem = { movie ->
+                            launchMovieDetailsActivity(
+                                context = this,
+                                movie = movie
+                            )
+                        }
                     )
                 }
             }

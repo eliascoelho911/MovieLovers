@@ -1,37 +1,51 @@
 package com.github.eliascoelho911.movielovers.base.movielist
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
-import com.github.eliascoelho911.movielovers.base.MovieImage
+import com.github.eliascoelho911.movielovers.base.TmdbImage
+import com.github.eliascoelho911.movielovers.base.VoteAverage
+import com.github.eliascoelho911.movielovers.model.Movie
+
+@Composable
+fun MovieVerticalList(
+    modifier: Modifier = Modifier,
+    movies: List<Movie>,
+    item: @Composable (position: Int, currentMovie: Movie) -> Unit
+) {
+    LazyColumn(modifier = modifier) {
+        itemsIndexed(movies, itemContent = { position, currentMovie ->
+            item(position = position, currentMovie = currentMovie)
+        })
+    }
+}
 
 @Composable
 fun MovieVerticalListItem(
+    modifier: Modifier,
     pathImage: String,
     title: String,
     genre: String,
-    releaseYear: Int,
+    releaseYear: Int? = null,
     voteAverage: Double
 ) {
-    Row {
-        MovieImage(
+    Row(modifier = modifier.itemModifier()) {
+        TmdbImage(
             path = pathImage,
             contentDescription = title,
             modifier = Modifier.imageModifier()
         )
         Spacer(modifier = Modifier.width(16.dp))
 
-        ConstraintLayout(modifier = Modifier.itemModifier()) {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (titleRef, voteAverageRef, genreAndReleaseYearRef) = createRefs()
 
             TitleText(
@@ -57,7 +71,8 @@ fun MovieVerticalListItem(
                 top.linkTo(titleRef.bottom, 4.dp)
             }) {
                 BodyText(text = genre, maxLines = 1)
-                BodyText(text = releaseYear.toString())
+                if (releaseYear != null)
+                    BodyText(text = releaseYear.toString())
             }
         }
     }

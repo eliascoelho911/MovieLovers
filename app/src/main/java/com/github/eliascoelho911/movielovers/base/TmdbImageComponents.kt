@@ -14,10 +14,10 @@ import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 
 @Composable
-fun MovieImage(
+fun TmdbImage(
     path: String,
     contentDescription: String,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val painter = rememberCoilPainter(
         request = TMDBImage.getAbsoluteUrl(
@@ -39,8 +39,7 @@ fun MovieImage(
             }
             else -> {
                 Box(
-                    modifier = modifier
-                        .background(Color.LightGray)
+                    modifier = modifier.background(Color.LightGray)
                 )
             }
         }

@@ -16,30 +16,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.eliascoelho911.movielovers.R
+import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
 import com.github.eliascoelho911.movielovers.base.MovieLoversTextField
 import com.github.eliascoelho911.movielovers.base.movielist.MovieHorizontalList
-import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
-import com.github.eliascoelho911.movielovers.base.MovieLoversTopAppBar
 import com.github.eliascoelho911.movielovers.base.movielist.MovieHorizontalListItem
+import com.github.eliascoelho911.movielovers.base.movielist.listHorizontalItemPadding
 import com.github.eliascoelho911.movielovers.model.Movie
-import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.DarkGray
 import com.github.eliascoelho911.movielovers.ui.theme.Green
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
-private val MovieHorizontalListPadding = 16.dp
+private val MovieItemPadding = 8.dp
 private val ScreenPadding = 16.dp
+private val MovieSectionItemPadding = 16.dp
 
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    tmdbViewModel: TmdbViewModel,
-    onClickShowAll: (List<Movie>) -> Unit
+    homeViewModel: HomeViewModel,
+    onClickShowAll: (List<Movie>) -> Unit,
+    onClickMovieItem: (Movie) -> Unit
 ) {
-    val popularMovies: List<Movie> by tmdbViewModel.popularMovies.observeAsState(emptyList())
-    val upcomingMovies: List<Movie> by tmdbViewModel.upcomingMovies.observeAsState(emptyList())
+    val popularMovies: List<Movie> by homeViewModel.popularMovies.observeAsState(emptyList())
+    val upcomingMovies: List<Movie> by homeViewModel.upcomingMovies.observeAsState(emptyList())
     var searchedText: String by remember { mutableStateOf("") }
     Scaffold(modifier = Modifier.statusBarsPadding(),
         topBar = {
@@ -52,8 +53,9 @@ fun HomeScreen(
             modifier = modifier,
             popularMovies = popularMovies,
             upcomingMovies = upcomingMovies,
-            tmdbViewModel = tmdbViewModel,
-            onClickShowAll = onClickShowAll
+            homeViewModel = homeViewModel,
+            onClickShowAll = onClickShowAll,
+            onClickMovieItem = onClickMovieItem
         )
     }
 }
@@ -62,92 +64,94 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenTopBar(searchedText: String, onSearchValueChanged: (String) -> Unit) {
     var logoIsVisible by remember { mutableStateOf(true) }
-    MovieLoversTopAppBar(title = {
-        AnimatedVisibility(
-            visible = !logoIsVisible,
-            enter = expandHorizontally(
-                expandFrom = Alignment.Start,
-                initialWidth = { 0 }
-            ) + fadeIn(initialAlpha = 0.3f),
-            exit = shrinkHorizontally(
-                shrinkTowards = Alignment.End
-            ) + fadeOut()
-        ) {
-            ProvideTextStyle(value = MaterialTheme.typography.body1) {
+    TopAppBar(
+        navigationIcon = {
+            Box {
+                AnimatedVisibility(
+                    visible = logoIsVisible,
+                    enter = slideInHorizontally()
+                            + fadeIn(initialAlpha = 0.3f),
+                    exit = shrinkHorizontally(
+                        shrinkTowards = Alignment.Start
+                    ) + fadeOut()
+                ) {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_menu_burger),
+                            contentDescription = stringResource(
+                                id = R.string.menu
+                            ),
+                            tint = DarkGray
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = !logoIsVisible,
+                    enter = slideInHorizontally()
+                            + fadeIn(initialAlpha = 0.3f),
+                    exit = shrinkHorizontally(
+                        shrinkTowards = Alignment.Start
+                    ) + fadeOut()
+                ) {
+                    IconButton(onClick = {
+                        logoIsVisible = true
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(
+                                id = R.string.back
+                            ),
+                            tint = DarkGray
+                        )
+                    }
+                }
+            }
+        },
+        actions = {
+            IconButton(onClick = { logoIsVisible = false }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = stringResource(
+                        id = R.string.search
+                    ),
+                    tint = DarkGray
+                )
+            }
+        },
+        title = {
+            AnimatedVisibility(
+                visible = !logoIsVisible,
+                enter = expandHorizontally(
+                    expandFrom = Alignment.Start,
+                    initialWidth = { 0 }
+                ) + fadeIn(initialAlpha = 0.3f),
+                exit = shrinkHorizontally(
+                    shrinkTowards = Alignment.End
+                ) + fadeOut()
+            ) {
                 MovieLoversTextField(
                     modifier = Modifier.fillMaxWidth(),
                     text = searchedText,
                     onValueChanged = onSearchValueChanged,
                     placeholder = {
-                        ProvideTextStyle(value = MaterialTheme.typography.body1) {
-                            Text(
-                                text = stringResource(id = R.string.enter_movie_name),
-                                color = Color.LightGray
-                            )
-                        }
-                    }
+                        Text(
+                            text = stringResource(id = R.string.enter_movie_name),
+                            color = Color.LightGray,
+                            style = MaterialTheme.typography.body1
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.body1
                 )
             }
-        }
-        AnimatedVisibility(
-            visible = logoIsVisible,
-            enter = fadeIn(initialAlpha = 0.3f),
-            exit = fadeOut()
-        ) {
-            MovieLoversLogo()
-        }
-    }, actions = {
-        IconButton(onClick = { logoIsVisible = false }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_search),
-                contentDescription = stringResource(
-                    id = R.string.search
-                ),
-                tint = DarkGray
-            )
-        }
-    }, navigationIcon = {
-        Box {
             AnimatedVisibility(
                 visible = logoIsVisible,
-                enter = slideInHorizontally()
-                        + fadeIn(initialAlpha = 0.3f),
-                exit = shrinkHorizontally(
-                    shrinkTowards = Alignment.Start
-                ) + fadeOut()
+                enter = fadeIn(initialAlpha = 0.3f),
+                exit = fadeOut()
             ) {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_menu_burger),
-                        contentDescription = stringResource(
-                            id = R.string.menu
-                        ),
-                        tint = DarkGray
-                    )
-                }
+                MovieLoversLogo()
             }
-            AnimatedVisibility(
-                visible = !logoIsVisible,
-                enter = slideInHorizontally()
-                        + fadeIn(initialAlpha = 0.3f),
-                exit = shrinkHorizontally(
-                    shrinkTowards = Alignment.Start
-                ) + fadeOut()
-            ) {
-                IconButton(onClick = {
-                    logoIsVisible = true
-                }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(
-                            id = R.string.back
-                        ),
-                        tint = DarkGray
-                    )
-                }
-            }
-        }
-    })
+        },
+    )
 }
 
 @Composable
@@ -155,8 +159,9 @@ private fun HomeScreenContent(
     modifier: Modifier,
     popularMovies: List<Movie>,
     upcomingMovies: List<Movie>,
-    tmdbViewModel: TmdbViewModel,
-    onClickShowAll: (List<Movie>) -> Unit
+    homeViewModel: HomeViewModel,
+    onClickShowAll: (List<Movie>) -> Unit,
+    onClickMovieItem: (Movie) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -166,8 +171,9 @@ private fun HomeScreenContent(
         MovieSection(
             title = stringResource(id = R.string.popular_movies),
             movies = popularMovies,
-            item = { _, movie ->
+            item = { _, movie, modifier ->
                 MovieHorizontalListItem(
+                    modifier = modifier.clickable(onClick = { onClickMovieItem(movie) }),
                     title = movie.title,
                     pathImage = movie.posterPath ?: "",
                     voteAverage = movie.voteAverage
@@ -178,17 +184,19 @@ private fun HomeScreenContent(
         MovieSection(
             title = stringResource(id = R.string.upcoming_movies),
             movies = upcomingMovies,
-            item = { _, movie ->
+            item = { _, currentMovie, modifier ->
                 var namesOfGenres: String by remember { mutableStateOf("") }
-                if (movie.genreIds != null)
-                    tmdbViewModel.findGenres(genreIds = movie.genreIds, onFinish = { result ->
-                        result.onSuccess { genres ->
-                            namesOfGenres = genres.joinToString { it.name }
-                        }
-                    })
+                if (currentMovie.genreIds != null) {
+                    val resultGenres by homeViewModel.findGenres(genreIds = currentMovie.genreIds)
+                        .observeAsState()
+                    resultGenres?.onSuccess { freshGenres ->
+                        namesOfGenres = freshGenres.joinToString { it.name }
+                    }
+                }
                 MovieHorizontalListItem(
-                    title = movie.title,
-                    pathImage = movie.posterPath ?: "",
+                    modifier = modifier.clickable(onClick = { onClickMovieItem(currentMovie) }),
+                    title = currentMovie.title,
+                    pathImage = currentMovie.posterPath ?: "",
                     genre = namesOfGenres
                 )
             },
@@ -202,24 +210,28 @@ private fun MovieSection(
     onClickShowAll: (List<Movie>) -> Unit,
     title: String,
     movies: List<Movie>,
-    item: @Composable (position: Int, movie: Movie) -> Unit
+    item: @Composable (position: Int, movie: Movie, modifier: Modifier) -> Unit
 ) {
     HeaderMovieSection(
         title = title,
         onClickShowAll = { onClickShowAll(movies) }
     )
     MovieHorizontalList(
-        modifier = Modifier.padding(top = MovieHorizontalListPadding),
+        modifier = Modifier.padding(top = ScreenPadding - MovieItemPadding),
         movies = movies,
         item = { position, currentMovie ->
-            val paddingValues = when (position) {
-                0 -> PaddingValues(start = MovieHorizontalListPadding, end = 8.dp)
-                movies.size - 1 -> PaddingValues(end = MovieHorizontalListPadding)
-                else -> PaddingValues(end = 8.dp)
-            }
-            Box(modifier = Modifier.padding(paddingValues = paddingValues)) {
-                item(position = position, movie = currentMovie)
-            }
+            item(
+                position = position,
+                movie = currentMovie,
+                modifier = Modifier
+                    .padding(vertical = MovieItemPadding)
+                    .listHorizontalItemPadding(
+                        listSize = movies.size,
+                        position = position,
+                        paddingBetweenItems = MovieItemPadding,
+                        paddingSides = ScreenPadding
+                    )
+            )
         }
     )
 }
@@ -227,24 +239,22 @@ private fun MovieSection(
 @Composable
 private fun HeaderMovieSection(title: String, onClickShowAll: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        ProvideTextStyle(value = MaterialTheme.typography.subtitle2) {
-            Text(
-                modifier = Modifier
-                    .padding(top = ScreenPadding, start = ScreenPadding)
-                    .weight(1f),
-                text = title.uppercase()
-            )
-        }
-        ProvideTextStyle(value = MaterialTheme.typography.caption) {
-            Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = MovieHorizontalListPadding, end = MovieHorizontalListPadding)
-                    .clickable(onClick = onClickShowAll),
-                text = stringResource(id = R.string.show_all),
-                textAlign = TextAlign.End,
-                color = Green
-            )
-        }
+        Text(
+            modifier = Modifier
+                .padding(top = ScreenPadding, start = ScreenPadding)
+                .weight(1f),
+            text = title.uppercase(),
+            style = MaterialTheme.typography.subtitle2
+        )
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = MovieSectionItemPadding, end = MovieSectionItemPadding)
+                .clickable(onClick = onClickShowAll),
+            text = stringResource(id = R.string.show_all),
+            textAlign = TextAlign.End,
+            color = Green,
+            style = MaterialTheme.typography.caption
+        )
     }
 }

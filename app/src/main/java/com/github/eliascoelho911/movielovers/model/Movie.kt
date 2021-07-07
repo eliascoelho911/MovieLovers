@@ -3,6 +3,7 @@ package com.github.eliascoelho911.movielovers.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
 
 @Parcelize
 data class Movie(
@@ -16,7 +17,7 @@ data class Movie(
     @SerializedName("overview") val overview: String?,
     @SerializedName("popularity") val popularity: Double,
     @SerializedName("poster_path") val posterPath: String?,
-    @SerializedName("release_date") val releaseDate: String?,
+    @SerializedName("release_date") val releaseDate: LocalDate?,
     @SerializedName("video") val hasVideo: Boolean?,
     @SerializedName("vote_average") val voteAverage: Double,
     @SerializedName("vote_count") val voteCount: Long

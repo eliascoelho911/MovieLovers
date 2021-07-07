@@ -21,16 +21,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.github.eliascoelho911.movielovers.details.launchMovieDetailsActivity
 import com.github.eliascoelho911.movielovers.listmovies.launchListMoviesActivity
 import com.github.eliascoelho911.movielovers.model.Movie
-import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.github.eliascoelho911.movielovers.ui.theme.MovieLoversTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val tmdbViewModel: TmdbViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +42,20 @@ class MainActivity : ComponentActivity() {
             ProvideWindowInsets {
                 MovieLoversTheme {
                     MainActivityScreen(
-                        tmdbViewModel = tmdbViewModel,
+                        homeViewModel = homeViewModel,
                         onClickShowAll = { movies ->
                             launchListMoviesActivity(
                                 context = this,
                                 movies = movies
                             )
-                        })
+                        },
+                        onClickMovieItem = { movie ->
+                            launchMovieDetailsActivity(
+                                context = this,
+                                movie = movie
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -58,7 +65,11 @@ class MainActivity : ComponentActivity() {
 @ExperimentalAnimationApi
 @VisibleForTesting
 @Composable
-fun MainActivityScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie>) -> Unit) {
+fun MainActivityScreen(
+    homeViewModel: HomeViewModel,
+    onClickShowAll: (List<Movie>) -> Unit,
+    onClickMovieItem: (Movie) -> Unit
+) {
     Surface(color = MaterialTheme.colors.primary) {
         val transitionState = remember { MutableTransitionState(SplashState.Shown) }
         val transition = updateTransition(transitionState, label = "splashTransition")
@@ -87,8 +98,9 @@ fun MainActivityScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie
             MainActivityContent(
                 modifier = Modifier.alpha(contentAlpha),
                 topPadding = contentTopPadding,
-                tmdbViewModel = tmdbViewModel,
-                onClickShowAll = onClickShowAll
+                homeViewModel = homeViewModel,
+                onClickShowAll = onClickShowAll,
+                onClickMovieItem = onClickMovieItem
             )
         }
     }
@@ -99,15 +111,17 @@ fun MainActivityScreen(tmdbViewModel: TmdbViewModel, onClickShowAll: (List<Movie
 private fun MainActivityContent(
     modifier: Modifier = Modifier,
     topPadding: Dp = 0.dp,
-    tmdbViewModel: TmdbViewModel,
-    onClickShowAll: (List<Movie>) -> Unit
+    homeViewModel: HomeViewModel,
+    onClickShowAll: (List<Movie>) -> Unit,
+    onClickMovieItem: (Movie) -> Unit
 ) {
     Column(modifier = modifier) {
         Spacer(Modifier.padding(top = topPadding))
         HomeScreen(
             modifier = modifier,
-            tmdbViewModel = tmdbViewModel,
-            onClickShowAll = onClickShowAll
+            homeViewModel = homeViewModel,
+            onClickShowAll = onClickShowAll,
+            onClickMovieItem = onClickMovieItem
         )
     }
 }

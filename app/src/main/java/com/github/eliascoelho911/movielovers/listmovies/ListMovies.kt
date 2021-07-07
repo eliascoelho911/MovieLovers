@@ -2,29 +2,32 @@ package com.github.eliascoelho911.movielovers.listmovies
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.eliascoelho911.movielovers.R
 import com.github.eliascoelho911.movielovers.base.MovieLoversLogo
 import com.github.eliascoelho911.movielovers.base.movielist.MovieVerticalList
 import com.github.eliascoelho911.movielovers.base.movielist.MovieVerticalListItem
+import com.github.eliascoelho911.movielovers.base.movielist.listVerticalItemPadding
 import com.github.eliascoelho911.movielovers.model.Movie
-import com.github.eliascoelho911.movielovers.tmdb.TmdbViewModel
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
-import com.github.eliascoelho911.movielovers.R
-import com.github.eliascoelho911.movielovers.base.MovieLoversTopAppBar
 
 private val MovieVerticalListPadding = 16.dp
+private val MovieItemPadding = 8.dp
 private val ScreenPadding = 16.dp
 
 @ExperimentalFoundationApi
@@ -32,8 +35,8 @@ private val ScreenPadding = 16.dp
 @Composable
 fun ListMoviesScreen(
     listMoviesViewModel: ListMoviesViewModel,
-    tmdbViewModel: TmdbViewModel,
     onBackPressed: () -> Unit,
+    onClickMovieItem: (Movie) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
@@ -41,14 +44,14 @@ fun ListMoviesScreen(
     ) {
         ListMovieContent(
             listMoviesViewModel = listMoviesViewModel,
-            tmdbViewModel = tmdbViewModel
+            onClickMovieItem = onClickMovieItem
         )
     }
 }
 
 @Composable
 private fun ListMoviesTopBar(onBackPressed: () -> Unit) {
-    MovieLoversTopAppBar(title = { MovieLoversLogo() },
+    TopAppBar(
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(
@@ -56,58 +59,52 @@ private fun ListMoviesTopBar(onBackPressed: () -> Unit) {
                     contentDescription = stringResource(id = R.string.back)
                 )
             }
-        })
+        },
+        title = { MovieLoversLogo() },
+    )
 }
 
 @Composable
 private fun ListMovieContent(
     listMoviesViewModel: ListMoviesViewModel,
-    tmdbViewModel: TmdbViewModel
+    onClickMovieItem: (Movie) -> Unit
 ) {
     val movies = listMoviesViewModel.movies
     Column {
         MovieVerticalList(
-            modifier = Modifier.padding(horizontal = ScreenPadding),
             movies = movies,
             item = { position, currentMovie ->
-                val genres = remember { mutableStateOf("") }
-                if (currentMovie.genreIds != null && currentMovie.genreIds.isNotEmpty())
-                    tmdbViewModel.findGenres(
-                        genreIds = currentMovie.genreIds,
-                        onFinish = { result ->
-                            result.onSuccess { genresReturned ->
-                                genres.value = genresReturned.joinToString { it.name }
-                            }
-                        })
-                MovieListItem(position, movies.size, currentMovie, genres)
+                var namesOfGenres: String by remember { mutableStateOf("") }
+                if (currentMovie.genreIds != null) {
+                    val resultGenres by listMoviesViewModel.findGenres(genreIds = currentMovie.genreIds)
+                        .observeAsState()
+                    resultGenres?.onSuccess { freshGenres ->
+                        namesOfGenres = freshGenres.joinToString { it.name }
+                    }
+                }
+                val boxModifier = Modifier.navigationBarsPadding()
+                    .takeIf { position == movies.size - 1 }
+                    ?: Modifier
+                Box(
+                    modifier = boxModifier
+                        .padding(horizontal = ScreenPadding)
+                        .listVerticalItemPadding(
+                            listSize = movies.size,
+                            position = position,
+                            paddingBetweenItems = MovieItemPadding,
+                            paddingSides = MovieVerticalListPadding
+                        )
+                ) {
+                    MovieVerticalListItem(
+                        modifier = Modifier
+                            .clickable(onClick = { onClickMovieItem(currentMovie) }),
+                        pathImage = currentMovie.posterPath ?: "",
+                        title = currentMovie.title,
+                        genre = namesOfGenres,
+                        releaseYear = currentMovie.releaseDate?.year,
+                        voteAverage = currentMovie.voteAverage
+                    )
+                }
             })
-    }
-}
-
-@Composable
-private fun MovieListItem(
-    position: Int,
-    listSize: Int,
-    currentMovie: Movie,
-    genres: MutableState<String>
-) {
-    val paddingValues = when (position) {
-        0 -> PaddingValues(top = MovieVerticalListPadding, bottom = 8.dp)
-        listSize - 1 -> PaddingValues(bottom = MovieVerticalListPadding)
-        else -> PaddingValues(bottom = 8.dp)
-    }
-    val modifier = if (listSize - 1 == position)
-        Modifier.navigationBarsPadding()
-    else
-        Modifier
-
-    Box(modifier = modifier.padding(paddingValues = paddingValues)) {
-        MovieVerticalListItem(
-            pathImage = currentMovie.posterPath ?: "",
-            title = currentMovie.title,
-            genre = genres.value,
-            releaseYear = 2020,
-            voteAverage = currentMovie.voteAverage
-        )
     }
 }

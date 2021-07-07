@@ -1,6 +1,8 @@
 package com.github.eliascoelho911.movielovers.di
 
 import com.github.eliascoelho911.movielovers.retrofit.TMDBService
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,7 +12,10 @@ import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatterBuilder
 import javax.inject.Singleton
+
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 private const val API_KEY = "a8b046346f76bbf7e43363a6f0b69d2b"
@@ -49,9 +54,16 @@ class RetrofitModule {
     @Singleton
     @Provides
     fun provideRetrofit(client: OkHttpClient): Retrofit {
+        val gson = GsonBuilder().registerTypeAdapter(
+            LocalDate::class.java,
+            JsonDeserializer { json, _, _ ->
+                val formatter = DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd").toFormatter()
+                LocalDate.parse(json.asJsonPrimitive.asString, formatter)
+            })
+            .create()
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
     }
